@@ -18,6 +18,7 @@
     </string>
     <string name="title_activity_settings">Settings</string>
     <string name="SetTheme">Выбрать тему</string>
+    <string name="login">Login</string>
 
 
 </resources>

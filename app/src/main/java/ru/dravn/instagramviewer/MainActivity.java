@@ -28,6 +28,11 @@ public class MainActivity extends BaseActivity {
                 startActivity(intent);
                 finish();
                 return true;
+            case R.id.login:
+                Intent intent2 = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent2);
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
