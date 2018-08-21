@@ -1,0 +1,31 @@
+<resources>
+
+
+
+    <style name="RedAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="colorPrimary">@color/colorPrimaryRed</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryRedDark</item>
+        <item name="colorAccent">@color/colorAccentDark</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="BlueAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="colorPrimary">@color/colorPrimaryBlue</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryBlueDark</item>
+        <item name="colorAccent">@color/colorAccentLight</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+
+    <style name="GreenAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="colorPrimary">@color/colorPrimaryGreen</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryGreenDark</item>
+        <item name="colorAccent">@color/colorAccentDark</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+
+</resources>
