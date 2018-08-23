@@ -16,7 +16,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        if ((!App.isAUTH())&&(!this.getClass().equals(LoginActivity.class))) {
+        if ((!App.isAUTH()) && (!this.getClass().equals(LoginActivity.class))) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();

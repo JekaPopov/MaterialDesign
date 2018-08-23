@@ -12,28 +12,28 @@
     android:layout_marginTop="8dp"
     android:gravity="center"
     >
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/buttonGreen"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="36dp"
         android:background="@color/colorPrimaryGreen"
         android:text="@string/SetTheme"
-        android:layout_margin="8dp"/>
+        android:layout_margin="8dp" />
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/buttonRed"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="36dp"
         android:background="@color/colorPrimaryRed"
         android:text="@string/SetTheme"
-        android:layout_margin="8dp"/>
+        android:layout_margin="8dp" />
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/buttonBlue"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="36dp"
         android:background="@color/colorPrimaryBlue"
         android:text="@string/SetTheme"
-        android:layout_margin="8dp"/>
+        android:layout_margin="8dp" />
 </LinearLayout>
 </android.support.constraint.ConstraintLayout>

@@ -13,4 +13,15 @@
         android:orderInCategory="100"
         android:title="@string/login"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/av_action_img_OK"
+        android:icon="@drawable/ic_check_vector"
+        android:title=""
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/av_action_img_Close"
+        android:icon="@drawable/ic_close_vector"
+        android:title=""
+        app:showAsAction="always" />
 </menu>
