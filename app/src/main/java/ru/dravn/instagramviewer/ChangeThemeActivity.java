@@ -44,8 +44,7 @@ public class ChangeThemeActivity extends BaseActivity {
 
     }
 
-    private void checkSelectButton()
-    {
+    private void checkSelectButton() {
         switch (theme) {
             case R.style.GreenAppTheme: {
                 findViewById(R.id.buttonGreen).setVisibility(View.GONE);
