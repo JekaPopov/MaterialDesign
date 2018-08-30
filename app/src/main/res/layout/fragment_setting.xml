@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp"
+
+        >
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/buttonGreen"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:background="@color/colorPrimaryGreen"
+            android:text="@string/SetTheme"
+            android:gravity="center"
+            android:layout_margin="8dp" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/buttonRed"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:background="@color/colorPrimaryRed"
+            android:text="@string/SetTheme"
+            android:gravity="center"
+            android:layout_margin="8dp" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/buttonBlue"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:background="@color/colorPrimaryBlue"
+            android:text="@string/SetTheme"
+            android:gravity="center"
+            android:layout_margin="8dp" />
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

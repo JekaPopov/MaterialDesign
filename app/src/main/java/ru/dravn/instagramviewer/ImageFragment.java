@@ -1,32 +1,37 @@
 package ru.dravn.instagramviewer;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ImageFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
+    private File directory;
+    File[] files;
+    ArrayList<String> data = new ArrayList<>();
+    private ViewPager pager;
+    private GridView gallery;
 
 
-    public static ImageFragment newInstance(String param1, String param2) {
+    public static ImageFragment newInstance(HashMap<String, String> map) {
         ImageFragment fragment = new ImageFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -34,10 +39,16 @@ public class ImageFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+        directory = new File(
+                Environment
+                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                "MyFolder");
+        if (!directory.exists())
+            directory.mkdirs();
+
+        files = directory.listFiles();
+
     }
 
     @Override
@@ -46,50 +57,127 @@ public class ImageFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_image, container, false);
 
-        ((TextView) v.findViewById(R.id.text1)).setText(mParam1);
-        ((TextView) v.findViewById(R.id.text2)).setText(mParam2);
 
-        v.findViewById(R.id.fab)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Snackbar.make(view, "Фото добавлено", Snackbar.LENGTH_LONG)
-                                .show();
-                    }
-                });
+        ImagesAdapter adapter = new ImagesAdapter(getContext(), files);
+        gallery = v.findViewById(R.id.gallery);
+        gallery.setAdapter(adapter);
+
+        pager = v.findViewById(R.id.pager);
+
         return v;
     }
 
+    private class ImagesAdapter extends BaseAdapter {
+        private Context mContext;
+        private File[] files;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+        public ImagesAdapter(Context context, File[] files) {
+            super();
+            this.mContext = context;
+            this.files = files;
+        }
+
+        @Override
+        public int getCount() {
+            return files.length;
+        }
+
+        @Override
+        public File getItem(int position) {
+            return files[position];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+
+        @Override
+        public View getView(final int position, View convertView, final ViewGroup parent) {
+            ViewHolder holder;
+
+            if (convertView == null) {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.grid_item_layout, null);
+                holder = new ViewHolder();
+                holder.imageView = convertView.findViewById(R.id.grid_item_image);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            Picasso.get()
+                    .load(files[position])
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_menu_gallery)
+                    .error(R.drawable.ic_menu_gallery)
+                    .into(holder.imageView);
+
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ImageFragment.ImagePagerAdapter mPagerAdapter = new ImageFragment.ImagePagerAdapter(getContext(), files);
+
+                    pager.setAdapter(mPagerAdapter);
+                    pager.setCurrentItem(position);
+                    pager.setVisibility(View.VISIBLE);
+                    gallery.setVisibility(View.GONE);
+                }
+            });
+
+
+            return convertView;
+        }
+
+        private class ViewHolder {
+            ImageView imageView;
+        }
+
+    }
+
+    class ImagePagerAdapter extends PagerAdapter {
+
+        Context mContext;
+        LayoutInflater mLayoutInflater;
+
+        public ImagePagerAdapter(Context context, File[] files) {
+            mContext = context;
+            mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public int getCount() {
+            return files.length;
+        }
+
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            View itemView = mLayoutInflater.inflate(R.layout.pager_item, container, false);
+
+            Picasso.get()
+                    .load(files[position])
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_menu_gallery)
+                    .error(R.drawable.ic_menu_gallery)
+                    .into((ImageView) itemView.findViewById(R.id.image));
+
+            container.addView(itemView);
+
+            return itemView;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
         }
     }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }
+

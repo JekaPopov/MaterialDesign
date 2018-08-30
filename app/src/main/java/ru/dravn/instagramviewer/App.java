@@ -4,14 +4,14 @@ import android.app.Application;
 
 public class App extends Application {
 
-    public static boolean AUTH = false;
+    public  boolean AUTH = false;
 
-    public static boolean isAUTH() {
+    public  boolean isAUTH() {
         return AUTH;
     }
 
-    public static void setAUTH(boolean auth) {
-        App.AUTH = auth;
+    public void setAUTH(boolean auth) {
+        this.AUTH = auth;
     }
 
 }
