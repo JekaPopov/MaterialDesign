@@ -10,20 +10,36 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.Button;
+
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+
+public class MainActivity extends MvpAppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, MainView {
 
     protected static final String SETTING = "setting";
     protected static final String THEME = "theme";
-    private int theme;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+
+    @InjectPresenter
+    MainPresenter presenter;
 
 
     @Override
@@ -31,21 +47,12 @@ public class MainActivity extends AppCompatActivity
 
         changeTheme();
 
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -54,7 +61,19 @@ public class MainActivity extends AppCompatActivity
         ((NavigationView) findViewById(R.id.nav_view))
                 .setNavigationItemSelectedListener(this);
 
-        super.onCreate(savedInstanceState);
+
+        Boolean changeTheme = getIntent().getBooleanExtra(THEME, false);
+
+        if (changeTheme) {
+            presenter.startFragment("SettingFragment", new HashMap<String, String>());
+        }
+
+    }
+
+    @OnClick(R.id.fab)
+    public void onClick(Button button) {
+        Snackbar.make(button, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 
     @Override
@@ -63,9 +82,11 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if(getSupportFragmentManager().getBackStackEntryCount()>1)
-
-            super.onBackPressed();
+            if (getSupportFragmentManager().getBackStackEntryCount() > 1)
+                super.onBackPressed();
+            else {
+                drawer.openDrawer(GravityCompat.START);
+            }
         }
     }
 
@@ -80,7 +101,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_settings) {
-            getFragment("SettingFragment", new HashMap<String, String>());
+            presenter.startFragment("SettingFragment", new HashMap<String, String>());
             return true;
         }
 
@@ -94,13 +115,14 @@ public class MainActivity extends AppCompatActivity
 
         if (item.getItemId() == R.id.nav_camera) {
 
-            getFragment("PhotoFragment", map);
+            presenter.startFragment("PhotoFragment", map);
 
         } else if (item.getItemId() == R.id.nav_gallery) {
-            getFragment("ImageFragment", map);
+            presenter.startFragment("ImageFragment", map);
 
         } else if (item.getItemId() == R.id.nav_setting) {
-            getFragment("SettingFragment", map);
+            presenter.startFragment("SettingFragment", map);
+
 
         } else if (item.getItemId() == R.id.nav_share) {
 
@@ -108,45 +130,23 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        ((DrawerLayout)findViewById(R.id.drawer_layout)).closeDrawer(GravityCompat.START);
+        ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawer(GravityCompat.START);
         return true;
     }
 
 
-    private void getFragment(String fragmentName, HashMap<String, String> map) {
-        Fragment fragment;
+    private void changeTheme() {
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        SharedPreferences mSettings = getSharedPreferences(SETTING, Context.MODE_PRIVATE);
+        String theme = mSettings.getString(THEME, "RedAppTheme");
+        setTheme(getResources().getIdentifier(theme, "style", getPackageName()));
+    }
 
-        switch (fragmentName) {
-            case "ImageFragment": {
-                fragment = ImageFragment.newInstance(map);
-                break;
-            }
-            case "PhotoFragment": {
-                fragment = PhotoFragment.newInstance(map);
-                break;
-            }
-            case "SettingFragment": {
-                map.put(THEME, String.valueOf(theme));
-                fragment = SettingFragment.newInstance(map);
-                break;
-            }
-            default: {
-                fragment = ImageFragment.newInstance(map);
-            }
-        }
+    @Override
+    public void startFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                 .addToBackStack(null)
                 .replace(R.id.frame, fragment).commit();
     }
-
-    private void changeTheme() {
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-
-        SharedPreferences mSettings = getSharedPreferences(SETTING, Context.MODE_PRIVATE);
-        theme = mSettings.getInt(THEME, R.style.RedAppTheme);
-        setTheme(theme);
-    }
-
 }

@@ -1,34 +1,27 @@
 package ru.dravn.instagramviewer;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
-
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import ru.dravn.instagramviewer.Adapters.ImagesAdapter;
+import ru.dravn.instagramviewer.Adapters.ImagePagerAdapter;
 
+public class ImagePagerFragment extends Fragment {
 
-public class ImageFragment extends Fragment {
 
     private File[] files;
 
-    public static ImageFragment newInstance(HashMap<String, String> map) {
-        ImageFragment fragment = new ImageFragment();
+    public static ImagePagerFragment newInstance(HashMap<String, String> map) {
+        ImagePagerFragment fragment = new ImagePagerFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -49,17 +42,16 @@ public class ImageFragment extends Fragment {
 
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_pager_image, container, false);
 
-        View v = inflater.inflate(R.layout.fragment_image, container, false);
+        ViewPager pager = v.findViewById(R.id.pager);
 
-        ((GridView)v.findViewById(R.id.gallery))
-                .setAdapter(new ImagesAdapter(getContext(), files, this));
+        ImagePagerAdapter mPagerAdapter = new ImagePagerAdapter(getContext(), files);
 
+        pager.setAdapter(mPagerAdapter);
         return v;
     }
-
 }
-
